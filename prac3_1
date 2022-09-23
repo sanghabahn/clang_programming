@@ -1,0 +1,60 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+/*
+ N명의 사람이 앞만 쳐다 보고 있다고 가정할 때, i번째 사람을 기준으로 자신보다 큰 사람이나 키가 같은 사람이 나올 때까지 사람을 센다.
+ 이 때, 가장 큰 수를 갖게 될 사람은 누구일까?
+ */
+
+void solve()
+
+int main(int argc, char **argv)
+{
+	// 임의의 정수 N 입력받은 후, N의 개수만큼 사용자로부터 키 입력받기(입력되는 수는 소수점 포함)
+	int N;
+	scanf("%d", &N);
+	
+	if ((N > 20) || (N <= 0))			// N은 0 초과 20이하로 설정
+		{
+			printf("Invalid N");
+			return 1;
+		}
+
+	double index[20] = { 0.0 };			// 소수점 포함하는 입력된 정수를 저장하는 double형 배열 생성
+	int p_count[20] = { 0 };			// 각 자리의 사람에게 보이는 사람의 수를 저장하기 위한 배열 생성
+
+	for (int i = 0; i < N; i++)
+		scanf("%lf", &index[i]);		// 배열에 N번 double형 데이터 입력
+	
+	p_count[0] = 0;						// 맨 앞에 있는 사람은 아무도 없으므로 0으로 설정
+	for (int i = 1; i < N; i++)
+	{
+		for (int j = i-1; j >= 0; j--)	// i번째 사람 앞의 사람부터 맨 앞 사람으로 카운트 진행
+		{
+			if (index[i] <= index[j])	// 본인과 같거나 큰 사람이 나오면 카운트 중지
+				break;
+			else						// 본인보다 작은 사람인 경우에는 계속 카운트 추가
+				p_count[i]++;
+		}
+	}
+	
+	// 만일 카운트 수가 같은 경우에는 줄 앞쪽의 사람을 출력해야 하므로 뒤부터 확인
+	int max_count = p_count[N-1];		// 가장 뒤의 사람을 max_count로 설정
+	int max_N = 0;						// 가장 많은 카운트를 가진 사람의 순번을 표현할 max_N 선언
+	
+	/*
+	max_count보다 i번째 사람의 카운트 수가 더 크거나 같을 경우,
+	max_count를 재설정하고, max_N을 i로 업데이트
+	*/
+	for (int i = N-1; i > 0; i--)		
+	{
+		if (max_count <= p_count[i])	
+		{
+			max_count = p_count[i];
+			max_N = i;
+		}
+	}
+	
+	printf("answer: %d\n", max_N+1); 	// 순번에 1을 더해 최종 답 출력
+	return 0;
+}
